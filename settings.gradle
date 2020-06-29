@@ -1,0 +1,2 @@
+include ':app', ':downloadimage'
+rootProject.name='DownloadImageProject'
