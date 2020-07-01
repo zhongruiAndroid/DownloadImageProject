@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImage();
-//                getImageBitmap();
+//                getImage();
+                getImageBitmap();
             }
         });
         int notchHeight = getNotchHeight(this);
@@ -60,21 +61,16 @@ public class MainActivity extends AppCompatActivity {
         String url = tvUrl.getText().toString();
         DownloadImage.getImageFromUrl(url, new DownloadInputStreamListener() {
             @Override
-            public void onSuccess(final InputStream obj) {
-                DownloadImageHelper.get().getExecutorService().execute(new Runnable() {
+            public void onSuccessInIO(final InputStream obj) {
+                final Bitmap bitmap = BitmapFactory.decodeStream(obj);
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        final Bitmap bitmap = BitmapFactory.decodeStream(obj);
-                        DownloadImage.closeInputStream(obj);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                iv.setImageBitmap(bitmap);
-                            }
-                        });
+                        Log.i("=====", "=====12onSuccess"+(Looper.myLooper()==Looper.getMainLooper()));
+                        iv.setImageBitmap(bitmap);
                     }
                 });
-                Log.i("=====", "=====onSuccess");
+                Log.i("=====", "=====11onSuccess"+(Looper.myLooper()==Looper.getMainLooper()));
             }
 
             @Override

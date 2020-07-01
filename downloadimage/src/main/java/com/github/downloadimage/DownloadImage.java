@@ -40,6 +40,7 @@ public class DownloadImage {
                         inputStream = httpURLConnection.getInputStream();
                         if (downloadListener instanceof DownloadInputStreamListener) {
                             success(downloadListener, inputStream);
+                            closeInputStream(inputStream);
                         } else {
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                             success(downloadListener, bitmap);
@@ -78,14 +79,9 @@ public class DownloadImage {
     }
 
     private static void success(final DownloadListener downloadListener, final InputStream inputStream) {
-        DownloadImageHelper.get().getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (downloadListener != null) {
-                    downloadListener.onSuccess(inputStream);
-                }
-            }
-        });
+        if (downloadListener != null) {
+            downloadListener.onSuccess(inputStream);
+        }
     }
 
     private static void success(final DownloadListener downloadListener, final Bitmap bitmap) {
