@@ -29,9 +29,10 @@ public class DownloadImage {
             @Override
             public void run() {
                 InputStream inputStream = null;
+                HttpURLConnection httpURLConnection = null;
                 try {
                     URL url = new URL(imageUrl);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setConnectTimeout(30000);
                     httpURLConnection.setReadTimeout(30000);
                     httpURLConnection.connect();
@@ -52,6 +53,10 @@ public class DownloadImage {
                 } catch (Exception e) {
                     e.printStackTrace();
                     error(downloadListener);
+                } finally {
+                    if (httpURLConnection != null) {
+                        httpURLConnection.disconnect();
+                    }
                 }
             }
         });
